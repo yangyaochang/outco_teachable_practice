@@ -97,13 +97,11 @@ const iterativeDFS = (graph, start) => {
 console.log(iterativeDFS(graph, 3))
 
 const recursiveDFS = (graph, start) => {
-    let stack = []
     let visited = new Set()
 
     const traverse = (currentNode) => {
         if (visited.has(currentNode)) {return}
 
-        console.log(currentNode)
         visited.add(currentNode)
         let neighbors = graph.storage[currentNode]
         for (let i = 0; i < neighbors.length; i++) {
