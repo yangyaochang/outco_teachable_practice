@@ -1,53 +1,34 @@
 const wordSearch = (matrix, target) => {
     let visited = new Set()
-    let list = []
-    let maxRow = matrix.length
-    let maxColumn = matrix[0].length
+    let found = false
 
-    const findFirstChar = (row, column) => {
-        let location = `${row}, ${column}`
-        if (visited.has(location)) {return}
-
-        if (matrix[row][column] === target[0]) {
-            list.push([row, column])
-        }
-        visited.add(location)
-        if (column + 1 < maxColumn) {findFirstChar(row, column + 1)}
-        if (column - 1 >= 0) {findFirstChar(row, column - 1)}
-        if (row + 1 < maxRow) {findFirstChar(row + 1, column)}
-        if (row - 1 >= 0) {findFirstChar(row - 1, column)}     
-    }
-    findFirstChar(0, 0)
-
-    let seen = new Set()
-
-    const search = (row, column, index) => {
-        let location = `${row}, ${column}`
-        console.log(location)
-        if (matrix[row][column] !== target[index]) {return false}
-        if (seen.has(location)) {return false}
+    const dfs = (row, col, index) => {
+        let coordinate = `${row}${col}`
         if (index === target.length) {
-            console.log('found')
-            return true
+            found = true
+            return
         }
-
-        if (matrix[row][column] === target[index]) {
-            seen.add(location)
-            if (column + 1 < maxColumn) {search(row, column + 1, index + 1)}
-            if (column - 1 >= 0) {search(row, column - 1, index + 1)}
-            if (row + 1 < maxRow) {search(row + 1, column, index + 1)}
-            if (row - 1 >= 0) {search(row - 1, column, index + 1)}    
-        }
+        if (row >= matrix.length || col >= matrix[0].length || row < 0 || col < 0) {return}
+        if (visited.has(coordinate)) {return}
+        if (matrix[row][col] !== target[index]) {return}
+        // The order of the base cases is important in this question!
         
+        visited.add(coordinate)
+    
+        dfs(row - 1, col, index + 1)
+        dfs(row + 1, col, index + 1)
+        dfs(row, col + 1, index + 1)
+        dfs(row, col - 1, index + 1)
+        
+        visited.delete(coordinate)
     }
 
-    for (let i = 0; i < list.length; i++) {
-        if (search(list[i][0], list[i][1], 0)) {
-            return true
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix[0].length; j++) {
+            dfs(i, j, 0)
         }
     }
-
-    return false
+    return found
 }
 
 const matrix = [['a', 'b', 'c', 'd'],
